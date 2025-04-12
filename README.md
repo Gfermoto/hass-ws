@@ -124,5 +124,6 @@ cd hass-ws
 - [DIYIoT Zone](https://t.me/DIYIoT_Zone) - Сообщество разработчиков и энтузиастов
 - [Home Assistant](https://www.home-assistant.io/)
 - [Node-RED](https://nodered.org/)
+- [RadSens ESP8266](https://github.com/Gfermoto/radsens) - Репозиторий с конфигурацией датчика радиации RadSens для ESPHome
 
 ```
