@@ -1,0 +1,120 @@
+[
+    {
+        "id": "watering_flow",
+        "type": "tab",
+        "label": "💧 Управление поливом",
+        "disabled": false,
+        "info": "Поток для автоматического управления поливом и дренажем"
+    },
+    {
+        "id": "watering_trigger",
+        "type": "server-state-changed",
+        "z": "watering_flow",
+        "name": "Отслеживание датчиков",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "exposeToHomeAssistant": false,
+        "haConfig": [
+            {
+                "property": "name",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            }
+        ],
+        "entityidfilter": "sensor.gw2000a_soil_moisture_2",
+        "entityidfiltertype": "exact",
+        "outputinitially": false,
+        "state_type": "str",
+        "haltifstate": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "outputs": 1,
+        "output_only_on_state_change": true,
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "ignorePrevStateNull": false,
+        "ignorePrevStateUnknown": false,
+        "ignorePrevStateUnavailable": false,
+        "ignoreCurrentStateUnknown": false,
+        "ignoreCurrentStateUnavailable": false,
+        "x": 200,
+        "y": 100,
+        "wires": [
+            ["watering_sensors"]
+        ]
+    },
+    {
+        "id": "watering_sensors",
+        "type": "api-current-state",
+        "z": "watering_flow",
+        "name": "Сбор данных датчиков",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.gw2000a_soil_moisture_2,sensor.ws2350_v2_37_humidity,sensor.ws2350_v2_37_daily_rain_rate,sensor.ws2350_v2_37_uv_index,sensor.ws2350_v2_37_solar_radiation,sensor.ws2350_v2_37_dewpoint,sensor.ws2350_v2_37_wind_speed",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            }
+        ],
+        "x": 400,
+        "y": 100,
+        "wires": [
+            ["watering_decision"]
+        ]
+    },
+    {
+        "id": "watering_decision",
+        "type": "function",
+        "z": "watering_flow",
+        "name": "Принятие решения о поливе",
+        "func": "const soilMoisture = parseFloat(msg.payload.soil_moisture) || 0;\nconst humidity = parseFloat(msg.payload.humidity) || 0;\nconst dailyRain = parseFloat(msg.payload.daily_rain) || 0;\nconst uv = parseFloat(msg.payload.uv) || 0;\nconst solar = parseFloat(msg.payload.solar) || 0;\nconst dewPoint = parseFloat(msg.payload.dew_point) || 0;\nconst windSpeed = parseFloat(msg.payload.wind_speed) || 0;\nconst openmeteo = msg.openmeteo || { \n  rain_today: 0, rain_tomorrow: 0,\n  et0_today: 0, et0_tomorrow: 0,\n  temp_min_today: 0, temp_min_tomorrow: 0\n};\n\n// Проверяем время начала полива (не раньше 6:00)\nconst now = new Date();\nconst currentHour = now.getHours();\nconst currentMinute = now.getMinutes();\n\n// Проверяем безопасные условия для полива\nconst isSafeTime = currentHour >= 6 && currentHour < 8; // Полив только с 6:00 до 8:00\nconst isSafeUV = uv < 2; // UV индекс должен быть меньше 2\nconst isSafeSolar = solar < 100; // Солнечная радиация должна быть меньше 100 Вт/м²\nconst isDewPointSafe = dewPoint < 15; // Безопасная точка росы для газона\nconst isWindSafe = windSpeed < 15; // Безопасная скорость ветра для полива (км/ч)\n\n// Проверяем условия для дренажа\nconst isWarmEnough = openmeteo.temp_min_today > 0 && openmeteo.temp_min_tomorrow > 0; // нет заморозков\nconst needsDrainage = isWarmEnough && ( // температура выше нуля И\n    soilMoisture > 50 || // высокая влажность почвы ИЛИ\n    dailyRain > 5 || // значительные осадки за день ИЛИ\n    dewPoint >= 15 // высокая точка росы\n);\n\n// Проверяем необходимость полива с учетом всех условий\nconst needsWatering = soilMoisture < 40 && // низкая влажность почвы\n                     humidity < 70 && // низкая влажность воздуха\n                     openmeteo.et0_today > 3 && // высокая испаряемость\n                     openmeteo.rain_today < 5 && // нет значительных осадков сегодня\n                     openmeteo.rain_tomorrow < 5 && // нет значительных осадков завтра\n                     isSafeTime && // безопасное время\n                     isSafeUV && // безопасный UV индекс\n                     isSafeSolar && // безопасная солнечная радиация\n                     isDewPointSafe && // безопасная точка росы\n                     isWindSafe; // безопасная скорость ветра\n\n// Расчет объема воды для полива (л/м²)\nlet wateringAmount = 0;\nif (needsWatering) {\n    // Базовый объем 10-15 л/м² с корректировкой на испаряемость\n    wateringAmount = 10 + Math.min(5, openmeteo.et0_today - 3);\n    \n    // Корректировка на влажность почвы\n    if (soilMoisture < 30) {\n        wateringAmount += 2; // Увеличиваем при очень сухой почве\n    } else if (soilMoisture > 35) {\n        wateringAmount -= 2; // Уменьшаем при почве ближе к нормальной\n    }\n    \n    // Корректировка на скорость ветра\n    if (windSpeed > 5) {\n        wateringAmount += Math.min(2, windSpeed / 5); // Увеличиваем при ветре\n    }\n    \n    // Корректировка на точку росы\n    if (dewPoint > 10) {\n        wateringAmount -= Math.min(2, (dewPoint - 10) / 2); // Уменьшаем при высокой точке росы\n    }\n    \n    // Учитываем прогноз осадков на сегодня\n    if (openmeteo.rain_today > 0 && openmeteo.rain_today < 5) {\n        wateringAmount -= openmeteo.rain_today; // Уменьшаем на объем ожидаемых осадков\n    }\n    \n    // Ограничиваем минимальное и максимальное значение\n    wateringAmount = Math.max(8, Math.min(17, wateringAmount));\n}\n\n// Общий объем для всей площади (300 кв.м)\nconst totalWateringAmount = wateringAmount * 300;\n\n// Сохраняем целевой объем воды и время начала полива\nglobal.set('watering_target_volume', totalWateringAmount);\nglobal.set('watering_start_time', new Date().getTime());\n\n// Добавляем информацию о причинах отказа от полива\nconst reasons = [];\nif (!isSafeTime) {\n    reasons.push(`Время полива не подходящее (${currentHour}:${currentMinute})`);\n}\nif (!isSafeUV) {\n    reasons.push(`UV индекс слишком высокий (${uv})`);\n}\nif (!isSafeSolar) {\n    reasons.push(`Солнечная радиация слишком высокая (${solar} Вт/м²)`);\n}\nif (!isDewPointSafe) {\n    reasons.push(`Точка росы слишком высокая (${dewPoint}°C)`);\n}\nif (!isWindSafe) {\n    reasons.push(`Скорость ветра слишком высокая (${windSpeed} км/ч)`);\n}\n\nmsg.payload = { \n    needsWatering: needsWatering, \n    needsDrainage: needsDrainage, \n    wateringAmountPerSqm: wateringAmount, \n    totalWateringAmount: totalWateringAmount, \n    area: 300, \n    soilMoisture: soilMoisture, \n    humidity: humidity, \n    dailyRain: dailyRain, \n    et0Today: openmeteo.et0_today, \n    rainToday: openmeteo.rain_today, \n    rainTomorrow: openmeteo.rain_tomorrow, \n    uv: uv, \n    solar: solar,\n    dewPoint: dewPoint,\n    windSpeed: windSpeed,\n    currentTime: `${currentHour}:${currentMinute}`, \n    safetyReasons: reasons \n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 600,
+        "y": 100,
+        "wires": [
+            ["watering_telegram"]
+        ]
+    },
+    {
+        "id": "watering_telegram",
+        "type": "function",
+        "z": "watering_flow",
+        "name": "Сообщение о поливе",
+        "func": "const data = msg.payload;\nlet message = '';\n\nif (data.needsWatering) {\n    message = `💧 *Рекомендация по поливу:*\n\n`;\n    message += `🌱 Влажность почвы: *${data.soilMoisture}%*\n`;\n    message += `💧 Влажность воздуха: *${data.humidity}%*\n`;\n    message += `🌧️ Осадки за день: *${data.dailyRain} мм*\n`;\n    message += `☀️ UV индекс: *${data.uv}*\n`;\n    message += `🌡️ Точка росы: *${data.dewPoint}°C*\n`;\n    message += `🌬️ Ветер: *${data.windSpeed} км/ч*\n\n`;\n    message += `📊 *Расчет полива:*\n`;\n    message += `• Норма на 1 м²: *${data.wateringAmountPerSqm.toFixed(1)} л*\n`;\n    message += `• Общий объем: *${data.totalWateringAmount.toFixed(0)} л*\n`;\n    message += `• Площадь: *${data.area} м²*\n\n`;\n    message += `⏰ Время: *${data.currentTime}*`;\n} else if (data.needsDrainage) {\n    message = `⚠️ *Рекомендация по дренажу:*\n\n`;\n    message += `🌱 Влажность почвы: *${data.soilMoisture}%*\n`;\n    message += `🌧️ Осадки за день: *${data.dailyRain} мм*\n`;\n    message += `🌡️ Точка росы: *${data.dewPoint}°C*\n\n`;\n    message += `❗️ Рекомендуется включить дренаж для предотвращения переувлажнения почвы.`;\n} else {\n    message = `ℹ️ *Статус полива:*\n\n`;\n    message += `🌱 Влажность почвы: *${data.soilMoisture}%*\n`;\n    message += `💧 Влажность воздуха: *${data.humidity}%*\n`;\n    message += `🌧️ Осадки за день: *${data.dailyRain} мм*\n\n`;\n    if (data.safetyReasons.length > 0) {\n        message += `❌ *Причины отказа от полива:*\n`;\n        data.safetyReasons.forEach(reason => {\n            message += `• ${reason}\n`;\n        });\n    } else {\n        message += `✅ Полив не требуется - все показатели в норме.`;\n    }\n}\n\nmsg.payload = {\n    chatId: env.get('TELEGRAM_CHAT_ID') || '-1001548038296',\n    type: 'message',\n    content: message\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 800,
+        "y": 100,
+        "wires": [
+            ["watering_sender"]
+        ]
+    },
+    {
+        "id": "watering_sender",
+        "type": "telegram sender",
+        "z": "watering_flow",
+        "name": "Отправить рекомендацию",
+        "bot": "df690a6504c1e710",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1000,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    }
+] 
