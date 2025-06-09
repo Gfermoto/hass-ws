@@ -1,0 +1,956 @@
+[
+    {
+        id 28cb5adefa62617e,
+        type tab,
+        label 🌿Рекомендации для газона,
+        disabled false,
+        info ,
+        env []
+    },
+    {
+        id 97747586d5abeb96,
+        type inject,
+        z 28cb5adefa62617e,
+        name Ежедневно в 600,
+        props [
+            {
+                p payload
+            }
+        ],
+        repeat ,
+        crontab 00 06   ,
+        once false,
+        onceDelay ,
+        topic ,
+        payload ,
+        payloadType str,
+        x 200,
+        y 100,
+        wires [
+            [
+                c1a5a918e5831042,
+                2a83d16c0e4e12fd,
+                9bec688d2806ee9d,
+                261bdeb51194f0b6,
+                634374e67d313901,
+                3a57fd6cbf8a8fae,
+                7d8f824952c4578d,
+                f3e331678d548323,
+                8f54806c78f9f21b,
+                920395437ecb30fb
+            ]
+        ]
+    },
+    {
+        id 261bdeb51194f0b6,
+        type http request,
+        z 28cb5adefa62617e,
+        name OpenMeteo Прогноз,
+        method GET,
+        ret txt,
+        url httpsapi.open-meteo.comv1forecastlatitude=55.934&longitude=36.61&daily=precipitation_sum,et0_fao_evapotranspiration,temperature_2m_min,temperature_2m_max&timezone=auto,
+        x 200,
+        y 200,
+        wires [
+            [
+                b4a5622350476f22
+            ]
+        ]
+    },
+    {
+        id b4a5622350476f22,
+        type function,
+        z 28cb5adefa62617e,
+        name Парсинг OpenMeteo,
+        func try {n  const data = JSON.parse(msg.payload);n  const todayIndex = 0;n  const tomorrowIndex = 1;n  msg.openmeteo = {n     Данные на сегодняn    rain_today data.daily.precipitation_sum[todayIndex]  0,n    et0_today data.daily.et0_fao_evapotranspiration[todayIndex]  0,n    temp_min_today data.daily.temperature_2m_min[todayIndex]  0,n    temp_max_today data.daily.temperature_2m_max[todayIndex]  0,n     Данные на завтраn    rain_tomorrow data.daily.precipitation_sum[tomorrowIndex]  0,n    et0_tomorrow data.daily.et0_fao_evapotranspiration[tomorrowIndex]  0,n    temp_min_tomorrow data.daily.temperature_2m_min[tomorrowIndex]  0,n    temp_max_tomorrow data.daily.temperature_2m_max[tomorrowIndex]  0n  };n  msg.topic = 'openmeteo';n} catch (error) {n  msg.payload = { error 'Ошибка запроса к Open-Meteo' };n  msg.topic = 'openmeteo';n}nreturn msg;,
+        outputs 1,
+        noerr 0,
+        x 440,
+        y 200,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id c1a5a918e5831042,
+        type api-current-state,
+        z 28cb5adefa62617e,
+        name Влажность почвы,
+        server 79fe7aa8.47ef74,
+        version 3,
+        outputs 1,
+        halt_if ,
+        halt_if_type str,
+        halt_if_compare is,
+        entity_id sensor.gw2000a_soil_moisture_1,
+        state_type str,
+        blockInputOverrides false,
+        outputProperties [
+            {
+                property payload,
+                propertyType msg,
+                value ,
+                valueType entityState
+            },
+            {
+                property data,
+                propertyType msg,
+                value ,
+                valueType entity
+            }
+        ],
+        for 0,
+        forType num,
+        forUnits minutes,
+        x 200,
+        y 300,
+        wires [
+            [
+                36c583941cd1ae27
+            ]
+        ]
+    },
+    {
+        id 36c583941cd1ae27,
+        type change,
+        z 28cb5adefa62617e,
+        name topic soil_moisture,
+        rules [
+            {
+                t set,
+                p topic,
+                pt msg,
+                to soil_moisture,
+                tot str
+            }
+        ],
+        x 440,
+        y 300,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id 2a83d16c0e4e12fd,
+        type api-current-state,
+        z 28cb5adefa62617e,
+        name Температура почвы,
+        server 79fe7aa8.47ef74,
+        version 3,
+        outputs 1,
+        halt_if_compare is,
+        entity_id sensor.gw2000a_soil_temperature_1,
+        state_type str,
+        blockInputOverrides false,
+        outputProperties [
+            {
+                property payload,
+                propertyType msg,
+                value ,
+                valueType entityState
+            },
+            {
+                property data,
+                propertyType msg,
+                value ,
+                valueType entity
+            }
+        ],
+        for 0,
+        forType num,
+        forUnits minutes,
+        x 200,
+        y 380,
+        wires [
+            [
+                5a48d7518005449b
+            ]
+        ]
+    },
+    {
+        id 5a48d7518005449b,
+        type change,
+        z 28cb5adefa62617e,
+        name topic soil_temp,
+        rules [
+            {
+                t set,
+                p topic,
+                pt msg,
+                to soil_temp,
+                tot str
+            }
+        ],
+        x 440,
+        y 380,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id 9bec688d2806ee9d,
+        type api-current-state,
+        z 28cb5adefa62617e,
+        name Осадки за день,
+        server 79fe7aa8.47ef74,
+        version 3,
+        outputs 1,
+        halt_if_compare is,
+        entity_id sensor.ws2350_v2_37_daily_rain_rate,
+        state_type str,
+        blockInputOverrides false,
+        outputProperties [
+            {
+                property payload,
+                propertyType msg,
+                value ,
+                valueType entityState
+            },
+            {
+                property data,
+                propertyType msg,
+                value ,
+                valueType entity
+            }
+        ],
+        for 0,
+        forType num,
+        forUnits minutes,
+        x 200,
+        y 460,
+        wires [
+            [
+                438091c3c6079d3c
+            ]
+        ]
+    },
+    {
+        id 438091c3c6079d3c,
+        type change,
+        z 28cb5adefa62617e,
+        name topic daily_rain,
+        rules [
+            {
+                t set,
+                p topic,
+                pt msg,
+                to daily_rain,
+                tot str
+            }
+        ],
+        x 440,
+        y 460,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id 634374e67d313901,
+        type http request,
+        z 28cb5adefa62617e,
+        name OpenFarm API,
+        method GET,
+        ret txt,
+        url httpsopenfarm.ccapiv1cropsfilter=lawn,
+        x 200,
+        y 600,
+        wires [
+            [
+                8ce6a3828ee9aee6
+            ]
+        ]
+    },
+    {
+        id 8ce6a3828ee9aee6,
+        type function,
+        z 28cb5adefa62617e,
+        name Парсинг OpenFarm,
+        func try {n  const data = JSON.parse(msg.payload);n  msg.topic = 'openfarm';n  n   Стандартные рекомендации для газонаn  const defaultAdvice = {n    watering '1-2 раза в неделю, 10-15 лм²',n    fertilizing 'NPK 20-5-10 весной и осенью',n    mowing '3-5 см',n    description 'Стандартные рекомендации по уходу за газоном'n  };nn  if (data.data && data.data.length  0) {n     Ищем запись о газонеn    const lawnData = data.data.find(item = {n      const name = item.attributes.name.toLowerCase();n      const commonNames = item.attributes.common_names  [];n      return name.includes('lawn')  n             commonNames.some(n = n.toLowerCase().includes('lawn')) n             name.includes('газон') n             commonNames.some(n = n.toLowerCase().includes('газон'));n    });nn    if (lawnData) {n      msg.openfarm = {n        watering lawnData.attributes.watering  defaultAdvice.watering,n        fertilizing lawnData.attributes.fertilizing  defaultAdvice.fertilizing,n        mowing lawnData.attributes.mowing_height  defaultAdvice.mowing,n        description lawnData.attributes.description  defaultAdvice.descriptionn      };n    } else {n      msg.openfarm = defaultAdvice;n    }n  } else {n    msg.openfarm = defaultAdvice;n  }n} catch (e) {n  msg.topic = 'openfarm';n  node.warn('Ошибка парсинга OpenFarm ' + e);n   В случае ошибки используем стандартные рекомендацииn  msg.openfarm = {n    watering '1-2 раза в неделю, 10-15 лм²',n    fertilizing 'NPK 20-5-10 весной и осенью',n    mowing '3-5 см',n    description 'Стандартные рекомендации по уходу за газоном'n  };n}nreturn msg;,
+        outputs 1,
+        noerr 0,
+        x 440,
+        y 600,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id 3a57fd6cbf8a8fae,
+        type api-current-state,
+        z 28cb5adefa62617e,
+        name Влажность воздуха,
+        server 79fe7aa8.47ef74,
+        version 3,
+        outputs 1,
+        halt_if_compare is,
+        entity_id sensor.ws2350_v2_37_humidity,
+        state_type str,
+        blockInputOverrides false,
+        outputProperties [
+            {
+                property payload,
+                propertyType msg,
+                value ,
+                valueType entityState
+            },
+            {
+                property data,
+                propertyType msg,
+                value ,
+                valueType entity
+            }
+        ],
+        for 0,
+        forType num,
+        forUnits minutes,
+        x 160,
+        y 540,
+        wires [
+            [
+                0d13b2f09aef3ac4
+            ]
+        ]
+    },
+    {
+        id 7d8f824952c4578d,
+        type api-current-state,
+        z 28cb5adefa62617e,
+        name UV индекс,
+        server 79fe7aa8.47ef74,
+        version 3,
+        outputs 1,
+        halt_if_compare is,
+        entity_id sensor.ws2350_v2_37_uv_index,
+        state_type str,
+        blockInputOverrides false,
+        outputProperties [
+            {
+                property payload,
+                propertyType msg,
+                value ,
+                valueType entityState
+            }
+        ],
+        x 150,
+        y 660,
+        wires [
+            [
+                da63e164995c4299
+            ]
+        ]
+    },
+    {
+        id 8f54806c78f9f21b,
+        type api-current-state,
+        z 28cb5adefa62617e,
+        name Точка росы,
+        server 79fe7aa8.47ef74,
+        version 3,
+        outputs 1,
+        halt_if_compare is,
+        entity_id sensor.ws2350_v2_37_dewpoint,
+        state_type str,
+        blockInputOverrides false,
+        outputProperties [
+            {
+                property payload,
+                propertyType msg,
+                value ,
+                valueType entityState
+            }
+        ],
+        x 150,
+        y 760,
+        wires [
+            [
+                fb82dd2d148a26a9
+            ]
+        ]
+    },
+    {
+        id 920395437ecb30fb,
+        type api-current-state,
+        z 28cb5adefa62617e,
+        name Скорость ветра,
+        server 79fe7aa8.47ef74,
+        version 3,
+        outputs 1,
+        halt_if_compare is,
+        entity_id sensor.ws2350_v2_37_wind_speed,
+        state_type str,
+        blockInputOverrides false,
+        outputProperties [
+            {
+                property payload,
+                propertyType msg,
+                value ,
+                valueType entityState
+            }
+        ],
+        x 150,
+        y 820,
+        wires [
+            [
+                d568e2d2cec57b42
+            ]
+        ]
+    },
+    {
+        id da63e164995c4299,
+        type change,
+        z 28cb5adefa62617e,
+        name topic uv,
+        rules [
+            {
+                t set,
+                p topic,
+                pt msg,
+                to uv,
+                tot str
+            }
+        ],
+        x 440,
+        y 660,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id f3e331678d548323,
+        type api-current-state,
+        z 28cb5adefa62617e,
+        name Солнечная радиация,
+        server 79fe7aa8.47ef74,
+        version 3,
+        outputs 1,
+        halt_if_compare is,
+        entity_id sensor.ws2350_v2_37_solar_radiation,
+        state_type str,
+        blockInputOverrides false,
+        outputProperties [
+            {
+                property payload,
+                propertyType msg,
+                value ,
+                valueType entityState
+            }
+        ],
+        x 160,
+        y 700,
+        wires [
+            [
+                6bdbf3c8824d331d
+            ]
+        ]
+    },
+    {
+        id 6bdbf3c8824d331d,
+        type change,
+        z 28cb5adefa62617e,
+        name topic solar,
+        rules [
+            {
+                t set,
+                p topic,
+                pt msg,
+                to solar,
+                tot str
+            }
+        ],
+        x 450,
+        y 700,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id 0d13b2f09aef3ac4,
+        type change,
+        z 28cb5adefa62617e,
+        name topic humidity,
+        rules [
+            {
+                t set,
+                p topic,
+                pt msg,
+                to humidity,
+                tot str
+            }
+        ],
+        x 440,
+        y 540,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id 9c3a25fd97e4ea49,
+        type join,
+        z 28cb5adefa62617e,
+        name Объединение данных,
+        mode custom,
+        build object,
+        property payload,
+        propertyType msg,
+        key topic,
+        joiner ,
+        joinerType str,
+        useparts true,
+        accumulate false,
+        timeout 5,
+        count 10,
+        reduceRight false,
+        reduceExp ,
+        reduceInit ,
+        reduceInitType ,
+        reduceFixup ,
+        x 790,
+        y 140,
+        wires [
+            [
+                a305977070948b1a,
+                9bbb284a5dd9f6a8
+            ]
+        ]
+    },
+    {
+        id a305977070948b1a,
+        type function,
+        z 28cb5adefa62617e,
+        name Генерация советов,
+        func const soilMoisture = msg.payload.soil_moisture  0;nconst soilTemp = msg.payload.soil_temp  0;nconst dailyRain = msg.payload.daily_rain  0;nconst humidity = msg.payload.humidity  0;nconst dewPoint = msg.payload.dew_point  0;nconst windSpeed = msg.payload.wind_speed  0;nconst openmeteo = msg.openmeteo  {n  rain_today 0, rain_tomorrow 0,n  temp_min_today 0, temp_min_tomorrow 0,n  temp_max_today 0, temp_max_tomorrow 0,n  et0_today 0, et0_tomorrow 0n};nconst openfarm = msg.openfarm  {};nnlet advice = [];nn Проверка на заморозки по прогнозу OpenMeteonif (openmeteo.temp_min_today = 0  openmeteo.temp_min_tomorrow = 0) {n  const minTemp = Math.min(openmeteo.temp_min_today, openmeteo.temp_min_tomorrow);n  advice.push(`❄️ Внимание! Прогноз заморозков! Минимальная температура воздуха ${minTemp}°C`);n}nn Проверка точки росыnif (dewPoint = 15) {n  advice.push(`⚠️ Точка росы Высокая (${dewPoint}°C), риск грибковых заболеваний`);n  if (humidity  80) {n    advice.push('⚠️ Рекомендация Отложите стрижку до снижения влажности');n  }n  if (soilMoisture  50) {n    advice.push('⚠️ Рекомендация Проверьте дренаж, возможно требуется аэрация');n  }n} else if (dewPoint = 10) {n  advice.push(`ℹ️ Точка росы Умеренная (${dewPoint}°C), следите за влажностью`);n}nn Проверка скорости ветраnif (windSpeed = 15) {n  advice.push(`⚠️ Ветер Сильный (${windSpeed} кмч), полив не рекомендуется`);n  if (dewPoint = 15) {n    advice.push('⚠️ Рекомендация При сильном ветре и высокой точке росы риск грибковых заболеваний повышен');n  }n} else if (windSpeed  5) {n  advice.push(`ℹ️ Ветер Умеренный (${windSpeed} кмч), полив возможен`);n  if (dewPoint = 15) {n    advice.push('ℹ️ Рекомендация При умеренном ветре и высокой точке росы полив лучше отложить');n  }n}nn Рекомендации по дренажу на основе осадков и влажности почвы (по датчикам)nconst isWarmEnough = openmeteo.temp_min_today  0 && openmeteo.temp_min_tomorrow  0;nif (isWarmEnough && (soilMoisture  50  dailyRain  5  dewPoint = 15)) {n    let drainageReasons = [];n    if (soilMoisture  50) {n        drainageReasons.push(`высокая влажность почвы (${soilMoisture}%)`);n    }n    if (dailyRain  5) {n        drainageReasons.push(`значительные осадки за день (${dailyRain} мм)`);n    }n    if (dewPoint = 15) {n        drainageReasons.push(`высокая точка росы (${dewPoint}°C)`);n    }n    advice.push(`⚠️ Дренаж Требуется. Причины ${drainageReasons.join('; ')}`);n}nelse if (!isWarmEnough) {n    advice.push('⚠️ Дренаж Не рекомендуется из-за риска заморозков');n}nn Рекомендации по поливу с учетом всех параметровn Проверяем необходимые условия по порядкуnlet wateringAdvice = null;nn 1. Проверка влажности почвы (необходимое условие)nif (soilMoisture = 40) {n    wateringAdvice = '💧 Полив Не требуется, влажность почвы достаточная';n}n 2. Проверка осадков (необходимое условие)nelse if (openmeteo.rain_today = 5  openmeteo.rain_tomorrow = 5) {n    const rainDays = [];n    if (openmeteo.rain_today = 5) rainDays.push('сегодня');n    if (openmeteo.rain_tomorrow = 5) rainDays.push('завтра');n    wateringAdvice = `💧 Полив Не требуется, ожидаются осадки ${rainDays.join(' и ')}`;n}n 3. Проверка скорости ветра (необходимое условие)nelse if (windSpeed = 15) {n    wateringAdvice = '💧 Полив Не рекомендуется из-за сильного ветра';n}n 4. Проверка точки росы (необходимое условие)nelse if (dewPoint = 15) {n    wateringAdvice = '💧 Полив Не рекомендуется из-за высокой точки росы';n}n 5. Проверка испаряемости (необходимое условие)nelse if (openmeteo.et0_today = 3) {n    wateringAdvice = '💧 Полив Не требуется, низкая испаряемость';n}n Если все необходимые условия выполнены, проверяем достаточные условияnelse {n    wateringAdvice = '💧 Полив 10-15 лм² до 10 утра';n}nnadvice.push(wateringAdvice);nn Рекомендации по удобрениямnlet fertilizingAdvice = null;nn 1. Проверка температуры почвы (необходимое условие)nif (soilTemp = 5) {n    fertilizingAdvice = '🌱 Удобрения Не рекомендуется, температура почвы слишком низкая';n}n 2. Проверка осадков (необходимое условие)nelse if (openmeteo.rain_today = 1  openmeteo.rain_tomorrow = 1) {n    fertilizingAdvice = '🌱 Удобрения Не рекомендуется, ожидаются осадки';n}n Если все необходимые условия выполненыnelse {n    fertilizingAdvice = '🌱 Удобрения Внесите NPK 20-5-10 (30 гм²)';n}nnadvice.push(fertilizingAdvice);nn Рекомендации по стрижкеnlet mowingAdvice = null;nn 1. Проверка температуры почвы (необходимое условие)nif (soilTemp = 5) {n    mowingAdvice = '✂️ Стрижка Не рекомендуется, температура почвы слишком низкая';n}n 2. Проверка влажности воздуха (необходимое условие)nelse if (humidity = 80) {n    mowingAdvice = '✂️ Стрижка Не рекомендуется, высокая влажность воздуха';n}n 3. Проверка точки росы (необходимое условие)nelse if (dewPoint = 15) {n    mowingAdvice = '✂️ Стрижка Не рекомендуется, высокая точка росы';n}n 4. Проверка скорости ветра (необходимое условие)nelse if (windSpeed = 15) {n    mowingAdvice = '✂️ Стрижка Не рекомендуется, сильный ветер';n}n Если все необходимые условия выполненыnelse {n    mowingAdvice = `✂️ Стрижка ${openfarm.mowing  '3-5 см'}`;n}nnadvice.push(mowingAdvice);nnmsg.payload = { advice advice.join('n')  'Сегодня особых действий не требуется.' };nreturn msg;,
+        outputs 1,
+        noerr 0,
+        x 1060,
+        y 140,
+        wires [
+            [
+                5ab8cce0d9e166e4
+            ]
+        ]
+    },
+    {
+        id 5ab8cce0d9e166e4,
+        type function,
+        z 28cb5adefa62617e,
+        name Форматирование,
+        func const today = new Date().toLocaleDateString('ru-RU', { day 'numeric', month 'long' });nconst text = `🌿 Рекомендации на ${today}n${msg.payload.advice}`;nmsg.payload = {n  chatId '-1001548038296',n  type 'message',n  content text,n  parse_mode 'Markdown'n};nreturn msg;,
+        outputs 1,
+        noerr 0,
+        x 1070,
+        y 220,
+        wires [
+            [
+                609dab23043476c2,
+                8f1f2b4bd9507694
+            ]
+        ]
+    },
+    {
+        id 9ce3ebb47e1ab617,
+        type telegram sender,
+        z 28cb5adefa62617e,
+        name Telegram,
+        bot df690a6504c1e710,
+        haserroroutput false,
+        outputs 1,
+        x 1060,
+        y 280,
+        wires [
+            []
+        ]
+    },
+    {
+        id 609dab23043476c2,
+        type debug,
+        z 28cb5adefa62617e,
+        name debug 3,
+        active true,
+        tosidebar true,
+        console false,
+        tostatus false,
+        complete false,
+        statusVal ,
+        statusType auto,
+        x 1440,
+        y 680,
+        wires []
+    },
+    {
+        id 9bbb284a5dd9f6a8,
+        type function,
+        z 28cb5adefa62617e,
+        name Принятие решения о поливе,
+        func const soilMoisture = parseFloat(msg.payload.soil_moisture)  0;nconst humidity = parseFloat(msg.payload.humidity)  0;nconst dailyRain = parseFloat(msg.payload.daily_rain)  0;nconst uv = parseFloat(msg.payload.uv)  0;nconst solar = parseFloat(msg.payload.solar)  0;nconst dewPoint = parseFloat(msg.payload.dew_point)  0;nconst windSpeed = parseFloat(msg.payload.wind_speed)  0;nconst openmeteo = msg.openmeteo  { n  rain_today 0, rain_tomorrow 0,n  et0_today 0, et0_tomorrow 0,n  temp_min_today 0, temp_min_tomorrow 0n};nn Проверяем время начала полива (не раньше 600)nconst now = new Date();nconst currentHour = now.getHours();nconst currentMinute = now.getMinutes();nn Проверяем безопасные условия для поливаnconst isSafeTime = currentHour = 6 && currentHour  8;  Полив только с 600 до 800nconst isSafeUV = uv  2;  UV индекс должен быть меньше 2nconst isSafeSolar = solar  100;  Солнечная радиация должна быть меньше 100 Втм²nconst isDewPointSafe = dewPoint  15;  Безопасная точка росы для газонаnconst isWindSafe = windSpeed  15;  Безопасная скорость ветра для полива (кмч)nn Проверяем условия для дренажаnconst isWarmEnough = openmeteo.temp_min_today  0 && openmeteo.temp_min_tomorrow  0;  нет заморозковnconst needsDrainage = isWarmEnough && (  температура выше нуля Иn    soilMoisture  50   высокая влажность почвы ИЛИn    dailyRain  5   значительные осадки за день ИЛИn    dewPoint = 15  высокая точка росыn);nn Проверяем необходимость полива с учетом всех условийnconst needsWatering = soilMoisture  40 &&  низкая влажность почвыn                     humidity  70 &&  низкая влажность воздухаn                     openmeteo.et0_today  3 &&  высокая испаряемостьn                     openmeteo.rain_today  5 &&  нет значительных осадков сегодняn                     openmeteo.rain_tomorrow  5 &&  нет значительных осадков завтраn                     isSafeTime &&  безопасное времяn                     isSafeUV &&  безопасный UV индексn                     isSafeSolar &&  безопасная солнечная радиацияn                     isDewPointSafe &&  безопасная точка росыn                     isWindSafe;  безопасная скорость ветраnn Расчет объема воды для полива (лм²)nlet wateringAmount = 0;nif (needsWatering) {n     Базовый объем 10-15 лм² с корректировкой на испаряемостьn    wateringAmount = 10 + Math.min(5, openmeteo.et0_today - 3);n    n     Корректировка на влажность почвыn    if (soilMoisture  30) {n        wateringAmount += 2;  Увеличиваем при очень сухой почвеn    } else if (soilMoisture  35) {n        wateringAmount -= 2;  Уменьшаем при почве ближе к нормальнойn    }n    n     Корректировка на скорость ветраn    if (windSpeed  5) {n        wateringAmount += Math.min(2, windSpeed  5);  Увеличиваем при ветреn    }n    n     Корректировка на точку росыn    if (dewPoint  10) {n        wateringAmount -= Math.min(2, (dewPoint - 10)  2);  Уменьшаем при высокой точке росыn    }n    n     Учитываем прогноз осадков на сегодняn    if (openmeteo.rain_today  0 && openmeteo.rain_today  5) {n        wateringAmount -= openmeteo.rain_today;  Уменьшаем на объем ожидаемых осадковn    }n    n     Ограничиваем минимальное и максимальное значениеn    wateringAmount = Math.max(8, Math.min(17, wateringAmount));n}nn Общий объем для всей площади (300 кв.м)nconst totalWateringAmount = wateringAmount  300;nn Сохраняем целевой объем воды и время начала поливаnglobal.set('watering_target_volume', totalWateringAmount);nglobal.set('watering_start_time', new Date().getTime());nn Добавляем информацию о причинах отказа от поливаnconst reasons = [];nif (!isSafeTime) {n    reasons.push(`Время полива не подходящее (${currentHour}${currentMinute})`);n}nif (!isSafeUV) {n    reasons.push(`UV индекс слишком высокий (${uv})`);n}nif (!isSafeSolar) {n    reasons.push(`Солнечная радиация слишком высокая (${solar} Втм²)`);n}nif (!isDewPointSafe) {n    reasons.push(`Точка росы слишком высокая (${dewPoint}°C)`);n}nif (!isWindSafe) {n    reasons.push(`Скорость ветра слишком высокая (${windSpeed} кмч)`);n}nnmsg.payload = { n    needsWatering needsWatering, n    needsDrainage needsDrainage, n    wateringAmountPerSqm wateringAmount, n    totalWateringAmount totalWateringAmount, n    area 300, n    soilMoisture soilMoisture, n    humidity humidity, n    dailyRain dailyRain, n    et0Today openmeteo.et0_today, n    rainToday openmeteo.rain_today, n    rainTomorrow openmeteo.rain_tomorrow, n    uv uv, n    solar solar,n    dewPoint dewPoint,n    windSpeed windSpeed,n    currentTime `${currentHour}${currentMinute}`, n    safetyReasons reasons n};nnreturn msg;,
+        outputs 1,
+        noerr 0,
+        x 830,
+        y 320,
+        wires [
+            [
+                d7bcd7a32efa729a
+            ]
+        ]
+    },
+    {
+        id d7bcd7a32efa729a,
+        type switch,
+        z 28cb5adefa62617e,
+        name Решение о поливедренаже,
+        property payload.needsDrainage,
+        propertyType msg,
+        rules [
+            {
+                t true
+            },
+            {
+                t true,
+                v payload.needsWatering,
+                vt msg
+            },
+            {
+                t else
+            }
+        ],
+        checkall false,
+        outputs 3,
+        x 780,
+        y 440,
+        wires [
+            [
+                3bafaa9d880c9361
+            ],
+            [
+                176dc737c8f912b9
+            ],
+            [
+                9e76918b2906600a
+            ]
+        ]
+    },
+    {
+        id 3bafaa9d880c9361,
+        type function,
+        z 28cb5adefa62617e,
+        name Логирование необходимости дренажа,
+        func const reasons = [];nn Определяем причины необходимости дренажаnif (msg.payload.soilMoisture  50) {n    reasons.push(`высокая влажность почвы (${msg.payload.soilMoisture}%)`);n}nnif (msg.payload.dailyRain  5) {n    reasons.push(`значительные осадки за день (${msg.payload.dailyRain} мм)`);n}nn Форматируем датуnconst now = new Date();nconst formattedDate = now.toLocaleDateString('ru-RU');nnmsg.payload = {n    content `💧 Требуется дренаж ${formattedDate}n` +n             `Причины ${reasons.join('; ')}`n};nnnode.status({fillyellow, shapering, textТребуется дренаж});nnreturn msg;,
+        outputs 1,
+        noerr 0,
+        x 740,
+        y 760,
+        wires [
+            [
+                609dab23043476c2
+            ]
+        ]
+    },
+    {
+        id 176dc737c8f912b9,
+        type api-call-service,
+        z 28cb5adefa62617e,
+        name Запуск полива,
+        server 79fe7aa8.47ef74,
+        version 7,
+        debugenabled false,
+        action rest_command.wfc01_watering_start,
+        floorId [],
+        areaId [],
+        deviceId [],
+        entityId [],
+        labelId [],
+        data ,
+        dataType json,
+        mergeContext ,
+        mustacheAltTags false,
+        outputProperties [],
+        queue none,
+        blockInputOverrides false,
+        domain rest_command,
+        service wfc01_watering_start,
+        x 1140,
+        y 340,
+        wires [
+            [
+                c1d7b9911e8722d9
+            ]
+        ]
+    },
+    {
+        id c1d7b9911e8722d9,
+        type api-current-state,
+        z 28cb5adefa62617e,
+        name Мониторинг расхода воды,
+        server 79fe7aa8.47ef74,
+        version 3,
+        outputs 1,
+        halt_if ,
+        halt_if_type str,
+        halt_if_compare is,
+        entity_id sensor.wfc01_water_total,
+        state_type str,
+        blockInputOverrides false,
+        outputProperties [
+            {
+                property payload,
+                propertyType msg,
+                value ,
+                valueType entityState
+            }
+        ],
+        x 1140,
+        y 440,
+        wires [
+            [
+                925b4e12122d2d68
+            ]
+        ]
+    },
+    {
+        id 925b4e12122d2d68,
+        type function,
+        z 28cb5adefa62617e,
+        name Проверка объема воды,
+        func  Получаем текущий объем воды из датчикаnconst currentVolume = parseFloat(msg.payload)  0;nn Получаем целевой объем и начальный объемnconst targetVolume = global.get('watering_target_volume')  0;nlet startVolume = global.get('watering_start_volume');nlet startTime = global.get('watering_start_time');nn Если начальный объем еще не установлен, устанавливаем его сейчасnif (startVolume === undefined  startVolume === null) {n    startVolume = currentVolume;n    startTime = new Date().getTime();n    global.set('watering_start_volume', startVolume);n    global.set('watering_start_time', startTime);n    node.status({fillblue, shapedot, textНачало полива});n}nn Рассчитываем выданный объем водыnconst deliveredVolume = currentVolume - startVolume;nn Проверяем на ошибкиnif (deliveredVolume  0) {n    node.error(Ошибка отрицательный объем воды);n    return [null, null];n}nn Проверяем время полива (максимум 2 часа)nconst now = new Date().getTime();nconst wateringDuration = (now - startTime)  60000;  в минутахnconst maxDuration = 120;  2 часа в минутахnn Проверяем условия для остановки поливаnconst targetReached = deliveredVolume = targetVolume;nconst timeExceeded = wateringDuration = maxDuration;nn Рассчитываем прогресс полива в процентахnconst progressPercent = targetVolume  0  Math.min(100, (deliveredVolume  targetVolume)  100)  0;nn Сохраняем текущий прогресс для отображенияnglobal.set('watering_progress', progressPercent.toFixed(0));nglobal.set('watering_delivered', deliveredVolume.toFixed(0));nn Обновляем статус ноды с более подробной информациейnnode.status({n    fill blue,n    shape dot,n    text `Прогресс ${progressPercent.toFixed(0)}%, ${deliveredVolume.toFixed(0)}л из ${targetVolume.toFixed(0)}л, ${Math.round(wateringDuration)} мин`n});nn Если достигли целевого объема или превысили время, останавливаем поливnif (targetReached  timeExceeded) {n    msg.targetReached = targetReached;n    msg.timeExceeded = timeExceeded;n    msg.deliveredVolume = deliveredVolume;n    msg.progressPercent = progressPercent;n    msg.wateringDuration = Math.round(wateringDuration);n    return [msg, null];n} else {n     Продолжаем мониторингn    msg.targetReached = false;n    msg.timeExceeded = false;n    msg.deliveredVolume = deliveredVolume;n    msg.progressPercent = progressPercent;n    msg.wateringDuration = Math.round(wateringDuration);n    return [null, msg];n},
+        outputs 2,
+        noerr 0,
+        x 1410,
+        y 440,
+        wires [
+            [
+                2ffbf24ccce63666
+            ],
+            [
+                c4ab7144b09d650f
+            ]
+        ]
+    },
+    {
+        id c4ab7144b09d650f,
+        type delay,
+        z 28cb5adefa62617e,
+        name Проверка каждые 30 сек,
+        pauseType delay,
+        timeout 30,
+        timeoutUnits seconds,
+        rate 1,
+        nbRateUnits 1,
+        rateUnits second,
+        randomFirst 1,
+        randomLast 5,
+        randomUnits seconds,
+        drop false,
+        allowrate false,
+        outputs 1,
+        x 1250,
+        y 540,
+        wires [
+            [
+                c1d7b9911e8722d9
+            ]
+        ]
+    },
+    {
+        id 2ffbf24ccce63666,
+        type api-call-service,
+        z 28cb5adefa62617e,
+        name Остановка полива,
+        server 79fe7aa8.47ef74,
+        version 7,
+        debugenabled false,
+        action rest_command.wfc01_watering_stop,
+        floorId [],
+        areaId [],
+        deviceId [],
+        entityId [],
+        labelId [],
+        data ,
+        dataType json,
+        mergeContext ,
+        mustacheAltTags false,
+        outputProperties [],
+        queue none,
+        blockInputOverrides false,
+        domain rest_command,
+        service wfc01_watering_stop,
+        x 1410,
+        y 340,
+        wires [
+            [
+                777c92c0ad908c7e
+            ]
+        ]
+    },
+    {
+        id 777c92c0ad908c7e,
+        type function,
+        z 28cb5adefa62617e,
+        name Логирование завершения полива,
+        func  Получаем данные о поливеnconst startTime = global.get('watering_start_time');nconst deliveredVolume = msg.deliveredVolume  0;nconst targetVolume = global.get('watering_target_volume')  0;nconst wateringDuration = msg.wateringDuration  0;nn Определяем причину остановки поливаnlet stopReason = '';nif (msg.targetReached) {n    stopReason = 'достигнут целевой объем воды';n} else if (msg.timeExceeded) {n    stopReason = 'превышено максимальное время полива (2 часа)';n} else {n    stopReason = 'неизвестная причина';n}nn Форматируем дату и времяnconst now = new Date();nconst formattedDate = now.toLocaleDateString('ru-RU');nconst formattedTime = now.toLocaleTimeString('ru-RU');nn Процент от целевого объемаnconst percentDelivered = targetVolume  0  (deliveredVolume  targetVolume)  100  100;nnmsg.payload = {n    content `✅ Полив завершен ${formattedDate} в ${formattedTime}n` +n             `Причина ${stopReason}n` +n             `Длительность ${wateringDuration} минn` +n             `Выдано воды ${deliveredVolume.toFixed(0)} л (${percentDelivered.toFixed(0)}% от плана)n` +n             `Расход ${(deliveredVolume  300).toFixed(1)} лм²`n};nn Очищаем глобальные переменные после завершенияnglobal.set('watering_start_time', null);nglobal.set('watering_target_volume', null);nglobal.set('watering_start_volume', null);nglobal.set('watering_progress', null);nglobal.set('watering_delivered', null);nnnode.status({fillgreen, shapering, textПолив завершен});nnreturn msg;,
+        outputs 1,
+        noerr 0,
+        x 1420,
+        y 240,
+        wires [
+            [
+                609dab23043476c2
+            ]
+        ]
+    },
+    {
+        id 9e76918b2906600a,
+        type function,
+        z 28cb5adefa62617e,
+        name Логирование отказа от полива,
+        func const reasons = [];nn Определяем причины отказа от поливаnif (msg.payload.soilMoisture = 40) {n    reasons.push(`Влажность почвы достаточная (${msg.payload.soilMoisture}%)`);n}nnif (msg.payload.rainToday = 5) {n    reasons.push(`Ожидаются осадки сегодня (${msg.payload.rainToday} мм)`);n}nnif (msg.payload.rainTomorrow = 5) {n    reasons.push(`Ожидаются осадки завтра (${msg.payload.rainTomorrow} мм)`);n}nnif (msg.payload.et0Today = 3) {n    reasons.push(`Низкая испаряемость (ET0 ${msg.payload.et0Today})`);n}nn Добавляем причины, связанные с безопасностьюnif (msg.payload.safetyReasons && msg.payload.safetyReasons.length  0) {n    reasons.push(...msg.payload.safetyReasons);n}nn Форматируем датуnconst now = new Date();nconst formattedDate = now.toLocaleDateString('ru-RU');nnmsg.payload = {n    content `ℹ️ Полив ${formattedDate} не требуетсяn` +n             `Причины ${reasons.join('; ')}`n};nnnode.status({fillblue, shapering, textПолив не требуется});nnreturn msg;,
+        outputs 1,
+        noerr 0,
+        x 910,
+        y 700,
+        wires [
+            [
+                609dab23043476c2
+            ]
+        ]
+    },
+    {
+        id 7b4b182f39d6fd5a,
+        type catch,
+        z 28cb5adefa62617e,
+        name ,
+        scope null,
+        uncaught false,
+        x 950,
+        y 600,
+        wires [
+            [
+                609dab23043476c2
+            ]
+        ]
+    },
+    {
+        id fb82dd2d148a26a9,
+        type change,
+        z 28cb5adefa62617e,
+        name topic dew_point,
+        rules [
+            {
+                t set,
+                p topic,
+                pt msg,
+                to dew_point,
+                tot str
+            }
+        ],
+        x 440,
+        y 740,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id d568e2d2cec57b42,
+        type change,
+        z 28cb5adefa62617e,
+        name topic wind_speed,
+        rules [
+            {
+                t set,
+                p topic,
+                pt msg,
+                to wind_speed,
+                tot str
+            }
+        ],
+        x 440,
+        y 820,
+        wires [
+            [
+                9c3a25fd97e4ea49
+            ]
+        ]
+    },
+    {
+        id 8f1f2b4bd9507694,
+        type delay,
+        z 28cb5adefa62617e,
+        name ,
+        pauseType delay,
+        timeout 2,
+        timeoutUnits hours,
+        rate 1,
+        nbRateUnits 1,
+        rateUnits second,
+        randomFirst 1,
+        randomLast 5,
+        randomUnits seconds,
+        drop false,
+        allowrate false,
+        outputs 1,
+        x 870,
+        y 280,
+        wires [
+            [
+                9ce3ebb47e1ab617
+            ]
+        ]
+    },
+    {
+        id 79fe7aa8.47ef74,
+        type server,
+        name Home Assistant,
+        addon true,
+        rejectUnauthorizedCerts true,
+        ha_boolean ,
+        connectionDelay false,
+        cacheJson false,
+        heartbeat false,
+        heartbeatInterval ,
+        statusSeparator ,
+        enableGlobalContextStore false
+    },
+    {
+        id df690a6504c1e710,
+        type telegram bot,
+        botname KPMG_TG_Bot,
+        usernames ,
+        chatids 2093488216, -1001548038296,
+        baseapiurl ,
+        testenvironment false,
+        updatemode polling,
+        pollinterval 2500,
+        usesocks false,
+        sockshost ,
+        socksprotocol socks5,
+        socksport 6667,
+        socksusername anonymous,
+        sockspassword ,
+        bothost ,
+        botpath ,
+        localbothost ,
+        localbotport 8443,
+        publicbotport 8443,
+        privatekey ,
+        certificate ,
+        useselfsignedcertificate false,
+        sslterminated false,
+        verboselogging false
+    }
+]
