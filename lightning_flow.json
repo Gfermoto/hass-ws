@@ -1,0 +1,128 @@
+[
+    {
+        "id": "lightning_alert_flow",
+        "type": "tab",
+        "label": "⚡️ Оповещение о молнии",
+        "disabled": false,
+        "info": "Поток для оповещений о грозовых разрядах"
+    },
+    {
+        "id": "lightning_trigger_node",
+        "type": "server-state-changed",
+        "z": "lightning_alert_flow",
+        "name": "Отслеживание удара молнии",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "exposeToHomeAssistant": false,
+        "haConfig": [
+            {
+                "property": "name",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            }
+        ],
+        "entityidfilter": "sensor.gw2000a_last_lightning_strike",
+        "entityidfiltertype": "exact",
+        "outputinitially": false,
+        "state_type": "str",
+        "haltifstate": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "outputs": 1,
+        "output_only_on_state_change": true,
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "ignorePrevStateNull": false,
+        "ignorePrevStateUnknown": false,
+        "ignorePrevStateUnavailable": false,
+        "ignoreCurrentStateUnknown": false,
+        "ignoreCurrentStateUnavailable": false,
+        "x": 200,
+        "y": 100,
+        "wires": [
+            ["lightning_sensor_node"]
+        ]
+    },
+    {
+        "id": "lightning_sensor_node",
+        "type": "api-current-state",
+        "z": "lightning_alert_flow",
+        "name": "Расстояние до молнии",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.gw2000a_lightning_strike_distance",
+        "state_type": "num",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            }
+        ],
+        "x": 400,
+        "y": 100,
+        "wires": [
+            ["lightning_filter"]
+        ]
+    },
+    {
+        "id": "lightning_filter",
+        "type": "function",
+        "z": "lightning_alert_flow",
+        "name": "Фильтр расстояния",
+        "func": "const distance = Number(msg.payload);\n\nif (distance > 0 && distance <= 10) {\n    return msg;\n}\n\nreturn null;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 100,
+        "wires": [
+            ["lightning_telegram_message"]
+        ]
+    },
+    {
+        "id": "lightning_telegram_message",
+        "type": "function",
+        "z": "lightning_alert_flow",
+        "name": "Сообщение о молнии",
+        "func": "const distance = Number(msg.payload);\n\nmsg.payload = {\n    chatId: env.get('TELEGRAM_CHAT_ID') || '-1001548038296',\n    type: 'message',\n    content: `⚡️ *ВНИМАНИЕ: Молния!*\n\n🌩️ Обнаружен грозовой разряд на расстоянии *${distance} км*\n\n⚠️ Рекомендуется соблюдать меры предосторожности!`\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 100,
+        "wires": [
+            ["lightning_telegram_sender"]
+        ]
+    },
+    {
+        "id": "lightning_telegram_sender",
+        "type": "telegram sender",
+        "z": "lightning_alert_flow",
+        "name": "Отправить алерт о молнии",
+        "bot": "df690a6504c1e710",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1000,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    }
+] 

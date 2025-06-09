@@ -1,0 +1,1227 @@
+[
+    {
+        "id": "8753085d4450422b",
+        "type": "tab",
+        "label": "WS 🌡️",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "02230be195d957d1",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Радиация",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.radsens_dynamic_intensity",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 370,
+        "y": 820,
+        "wires": [
+            [
+                "b0a043e7ac07eccd"
+            ]
+        ]
+    },
+    {
+        "id": "b0a043e7ac07eccd",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "radiation",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 820,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "bbbf346730c1a853",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Качество воздуха",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.gw2000a_pm2_5_1",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 370,
+        "y": 780,
+        "wires": [
+            [
+                "ceed0e0a68f16c7a"
+            ]
+        ]
+    },
+    {
+        "id": "ceed0e0a68f16c7a",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "air_quality",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 780,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "5882667ce6117177",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Влажность почвы",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.gw2000a_soil_moisture_2",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 380,
+        "y": 700,
+        "wires": [
+            [
+                "61d8b7800fd6e278"
+            ]
+        ]
+    },
+    {
+        "id": "cac067beaf050c81",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Температура почвы",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.gw2000a_soil_temperature_1",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 380,
+        "y": 740,
+        "wires": [
+            [
+                "11399ca90d222d22"
+            ]
+        ]
+    },
+    {
+        "id": "11399ca90d222d22",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "soil_temp",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 740,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "61d8b7800fd6e278",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "soil_moisture",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 700,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "78e2a211dcc4204e",
+        "type": "join",
+        "z": "8753085d4450422b",
+        "name": "Сбор данных",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "",
+        "joinerType": "str",
+        "useparts": true,
+        "accumulate": false,
+        "timeout": "5",
+        "count": "15",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 910,
+        "y": 440,
+        "wires": [
+            [
+                "35b7b8f15f96b494"
+            ]
+        ]
+    },
+    {
+        "id": "9e7e45f7074bccc7",
+        "type": "telegram sender",
+        "z": "8753085d4450422b",
+        "name": "Отправить в ТГ",
+        "bot": "df690a6504c1e710",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1100,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9cd55060dd065bb3",
+        "type": "telegram command",
+        "z": "8753085d4450422b",
+        "name": "",
+        "command": "/ws",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "scope": "default",
+        "bot": "df690a6504c1e710",
+        "strict": false,
+        "hasresponse": true,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 2,
+        "x": 70,
+        "y": 300,
+        "wires": [
+            [
+                "a4db950bae4ba176",
+                "aef2b84c93abecc6",
+                "cac1d0f1785f1e4c",
+                "14517a5336e5e8bb",
+                "8a4a5110dffd4ce9",
+                "826ef930e6e9042b",
+                "d761542a7d0ff3d8",
+                "eebff8479224189f",
+                "c256b98091daadbc",
+                "a73c77bb26fc4d6a",
+                "1e82b858984e7aa6",
+                "5882667ce6117177",
+                "cac067beaf050c81",
+                "bbbf346730c1a853",
+                "02230be195d957d1"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a4db950bae4ba176",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Температура",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_outdoor_temperature",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 380,
+        "y": 40,
+        "wires": [
+            [
+                "c3e65efb5265547e"
+            ]
+        ]
+    },
+    {
+        "id": "c3e65efb5265547e",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "temp",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 660,
+        "y": 40,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "aef2b84c93abecc6",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Влажность",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_humidity",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 370,
+        "y": 160,
+        "wires": [
+            [
+                "656793a77cf37555"
+            ]
+        ]
+    },
+    {
+        "id": "656793a77cf37555",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "hum",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 160,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "cac1d0f1785f1e4c",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Скорость ветра",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_wind_speed",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 380,
+        "y": 280,
+        "wires": [
+            [
+                "515a1dac0d204810"
+            ]
+        ]
+    },
+    {
+        "id": "515a1dac0d204810",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "wind_speed",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 280,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "14517a5336e5e8bb",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Направление ветра",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_wind_direction",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 400,
+        "y": 340,
+        "wires": [
+            [
+                "cb7afe2f95e352e0"
+            ]
+        ]
+    },
+    {
+        "id": "cb7afe2f95e352e0",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "wind_dir",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 340,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "8a4a5110dffd4ce9",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Давление",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_absolute_pressure",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 370,
+        "y": 460,
+        "wires": [
+            [
+                "34f3ebbe7bfb744e"
+            ]
+        ]
+    },
+    {
+        "id": "34f3ebbe7bfb744e",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "pressure",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 460,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "826ef930e6e9042b",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Осадки",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_rain_rate",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 360,
+        "y": 520,
+        "wires": [
+            [
+                "c64b06b1c3e70b34"
+            ]
+        ]
+    },
+    {
+        "id": "c64b06b1c3e70b34",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "precipitation",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 520,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "d761542a7d0ff3d8",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Точка росы",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_dewpoint",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 370,
+        "y": 220,
+        "wires": [
+            [
+                "1f31ab2bc420c9dd"
+            ]
+        ]
+    },
+    {
+        "id": "1f31ab2bc420c9dd",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "dewPoint",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 220,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "eebff8479224189f",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Температура по ощущениям",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_feels_like_temperature",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 430,
+        "y": 100,
+        "wires": [
+            [
+                "dc763e2f2ce60647"
+            ]
+        ]
+    },
+    {
+        "id": "dc763e2f2ce60647",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "apparentTemp",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 740,
+        "y": 100,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "c256b98091daadbc",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Индекс UV",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_uv_index",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 370,
+        "y": 640,
+        "wires": [
+            [
+                "ea069cf496a87531"
+            ]
+        ]
+    },
+    {
+        "id": "ea069cf496a87531",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "uvIndex",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 640,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "a73c77bb26fc4d6a",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Осадки за прошедший день",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_daily_rain_rate",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 420,
+        "y": 580,
+        "wires": [
+            [
+                "07c0dfa3776b50cd"
+            ]
+        ]
+    },
+    {
+        "id": "07c0dfa3776b50cd",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "dailyRain",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 660,
+        "y": 580,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "1e82b858984e7aa6",
+        "type": "api-current-state",
+        "z": "8753085d4450422b",
+        "name": "Порывы ветра",
+        "server": "79fe7aa8.47ef74",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.ws2350_v2_37_wind_gust",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": 0,
+        "forType": "num",
+        "forUnits": "minutes",
+        "x": 380,
+        "y": 400,
+        "wires": [
+            [
+                "87d032e06c4d6638"
+            ]
+        ]
+    },
+    {
+        "id": "87d032e06c4d6638",
+        "type": "change",
+        "z": "8753085d4450422b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "windGust",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 400,
+        "wires": [
+            [
+                "78e2a211dcc4204e"
+            ]
+        ]
+    },
+    {
+        "id": "35b7b8f15f96b494",
+        "type": "function",
+        "z": "8753085d4450422b",
+        "name": "Форматирование",
+        "func": "const temp = msg.payload.temp || 'N/A';\nconst apparentTemp = msg.payload.apparentTemp || 'N/A';\nconst hum = msg.payload.hum || 'N/A';\nconst dewPoint = msg.payload.dewPoint || 'N/A';\nconst windSpeed = msg.payload.wind_speed || 'N/A';\nconst windDirRaw = msg.payload.wind_dir || 0;\nconst windGust = msg.payload.windGust || 'N/A';\nconst pressurePa = msg.payload.pressure || 'N/A';\nconst precip = msg.payload.precipitation || 'N/A';\nconst dailyRain = msg.payload.dailyRain || 'N/A';\nconst uvIndex = msg.payload.uvIndex || 'N/A';\nconst soilMoisture = msg.payload.soil_moisture || 'N/A';\nconst airQualityIndex = msg.payload.air_quality || 'N/A';\nconst radiationRaw = msg.payload.radiation || 'N/A';\n\nconst directions = ['⬆️ С', '↗️ СВ', '➡️ В', '↘️ ЮВ', '⬇️ Ю', '↙️ ЮЗ', '⬅️ З', '↖️ СЗ'];\nlet windDir = 'N/A';\n\nif (!isNaN(windDirRaw)) {\n    const dirIndex = Math.round((Number(windDirRaw) % 360) / 45) % 8;\n    windDir = directions[dirIndex];\n}\n\nlet airQualityText = 'N/A';\nif (!isNaN(airQualityIndex)) {\n    const aqi = Number(airQualityIndex);\n    if (aqi <= 50) airQualityText = 'Хорошо';\n    else if (aqi <= 100) airQualityText = 'Умеренно';\n    else if (aqi <= 150) airQualityText = 'Плохо для чувствительных групп';\n    else if (aqi <= 200) airQualityText = 'Плохо';\n    else if (aqi <= 300) airQualityText = 'Очень плохо';\n    else airQualityText = 'Опасно';\n}\n\n// Преобразование давления из Па в мм рт. ст.\nconst pressureMmHg = !isNaN(pressurePa) ? (pressurePa * 0.750062).toFixed(2) : 'N/A';\n\nconst chatId = env.get('TELEGRAM_CHAT_ID') || '-1001548038296';\n\nlet soilMoistureText = 'N/A';\nif (!isNaN(soilMoisture)) {\n    const sm = Number(soilMoisture);\n    if (sm <= 8) soilMoistureText = 'Интенсивно поливаем';\n    else if (sm <= 15) soilMoistureText = 'Поливаем';\n    else if (sm <= 30) soilMoistureText = 'Идеально';\n    else if (sm <= 40) soilMoistureText = 'Хорошо';\n    else soilMoistureText = 'Дренаж';\n}\n\nconst soilTemp = msg.payload.soil_temp || 'N/A';\n\n// Конвертация радиации из мкР/ч в мкЗв/ч\nlet radiationConverted = 'N/A';\nlet radiationText = 'N/A';\nif (!isNaN(radiationRaw)) {\n    radiationConverted = (Number(radiationRaw) * 0.01).toFixed(2); // Умножаем на 0.01\n    const radiationValue = Number(radiationConverted);\n    if (radiationValue <= 0.1) radiationText = 'Фоновый уровень';\n    else if (radiationValue <= 0.2) radiationText = 'Норма';\n    else if (radiationValue <= 0.3) radiationText = 'Повышенный';\n    else if (radiationValue <= 0.6) radiationText = 'Высокий';\n    else radiationText = 'Опасный уровень';\n}\n\nmsg.payload = {\n    chatId: chatId,\n    type: 'message',\n    content: `🌦️ *Метеостанция КП Мастерград:*\\nhttps://www.ecowitt.net/home/share?authorize=USCFFK\\ \\n🌡 Температура: *${temp}°C*\\n🔻🌡️ Ощущается как: *${apparentTemp}°C*\\n💧 Влажность: *${hum}%*\\n🌡️💦 Точка росы: *${dewPoint}°C*\\n🌬 Ветер: *${windSpeed} м/с ${windDir}*\\n💨 Порывы ветра: *${windGust} м/с*\\n🎈 Давление: *${pressureMmHg} мм рт. ст.*\\n☔️ Осадки сейчас: *${precip} мм/ч*\\n🌧️ Осадки за день: *${dailyRain} мм*\\n☀️ УФ-индекс: *${uvIndex}*\\n💧🌱 Влажность почвы: *${soilMoisture}% (${soilMoistureText})*\\n🌡️🌱 Температура почвы: *${soilTemp}°C*\\n🌫️ Качество воздуха: *${airQualityText} (${airQualityIndex})*\\n☢️ Радиация: *${radiationConverted} мкЗв/ч (${radiationText})*`\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 240,
+        "wires": [
+            [
+                "178537c24086612e",
+                "7430725b5aac5952"
+            ]
+        ],
+        "outputLabels": [
+            "Сообщение"
+        ]
+    },
+    {
+        "id": "178537c24086612e",
+        "type": "debug",
+        "z": "8753085d4450422b",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "7430725b5aac5952",
+        "type": "delay",
+        "z": "8753085d4450422b",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1070,
+        "y": 300,
+        "wires": [
+            [
+                "9e7e45f7074bccc7"
+            ]
+        ]
+    },
+    {
+        "id": "723d6a8f10b4671e",
+        "type": "inject",
+        "z": "8753085d4450422b",
+        "name": "По расписанию",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 07 * * *",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "a4db950bae4ba176",
+                "eebff8479224189f",
+                "aef2b84c93abecc6",
+                "d761542a7d0ff3d8",
+                "cac1d0f1785f1e4c",
+                "14517a5336e5e8bb",
+                "1e82b858984e7aa6",
+                "8a4a5110dffd4ce9",
+                "826ef930e6e9042b",
+                "a73c77bb26fc4d6a",
+                "c256b98091daadbc",
+                "5882667ce6117177",
+                "cac067beaf050c81",
+                "bbbf346730c1a853",
+                "02230be195d957d1"
+            ]
+        ]
+    },
+    {
+        "id": "79fe7aa8.47ef74",
+        "type": "server",
+        "name": "Home Assistant",
+        "addon": true,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": "",
+        "connectionDelay": false,
+        "cacheJson": false,
+        "heartbeat": false,
+        "heartbeatInterval": "",
+        "statusSeparator": "",
+        "enableGlobalContextStore": false
+    },
+    {
+        "id": "df690a6504c1e710",
+        "type": "telegram bot",
+        "botname": "KPMG_TG_Bot",
+        "usernames": "",
+        "chatids": "2093488216, -1001548038296",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": "2500",
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    }
+]
